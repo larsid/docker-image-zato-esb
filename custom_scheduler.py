@@ -74,24 +74,31 @@ def load_and_schedule():
 
         if job_type == 'one_time':
             delay = int(job.get('initial_delay', 5))
-            logger.info(f"Agendado (Único): '{name}' para daqui a {delay}s")
-            # Usa threading.Timer para não bloquear o loop principal
-            threading.Timer(delay, perform_request, args=[name, url]).start()
+            if(delay <= 0):
+                logger.info(f"Job '{name}', esta sendo ignorado, foi definido valor menor ou igual a 0. Valor definido {delay}s")
+                pass
+            else:
+                logger.info(f"Agendado (Único): '{name}' para daqui a {delay}s")
+                # Usa threading.Timer para não bloquear o loop principal
+                threading.Timer(delay, perform_request, args=[name, url]).start()
 
         elif job_type == 'interval_based':
             interval = int(job.get('interval', 60))
             unit = job.get('unit', 'seconds')
             
             job_scheduler = schedule.every(interval)
-            
-            if unit == 'seconds':
-                job_scheduler.seconds.do(perform_request, name, url)
-            elif unit == 'minutes':
-                job_scheduler.minutes.do(perform_request, name, url)
-            elif unit == 'hours':
-                job_scheduler.hours.do(perform_request, name, url)
-                
-            logger.info(f"Agendado (Recorrente): '{name}' a cada {interval} {unit}")
+            if(interval <= 0):
+                logger.info(f"Job '{name}', esta sendo ignorado, foi definido valor menor ou igual a 0. Valor definido {interval}s")
+                pass
+            else:
+                if unit == 'seconds':
+                    job_scheduler.seconds.do(perform_request, name, url)
+                elif unit == 'minutes':
+                    job_scheduler.minutes.do(perform_request, name, url)
+                elif unit == 'hours':
+                    job_scheduler.hours.do(perform_request, name, url)
+                    
+                logger.info(f"Agendado (Recorrente): '{name}' a cada {interval} {unit}")
 
 def main():
     wait_for_zato()
