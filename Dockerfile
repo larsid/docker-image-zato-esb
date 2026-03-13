@@ -12,10 +12,15 @@ EXPOSE 22 8183 11223 17010 1883 9001
 # Adicionei 'mosquitto' na lista de instalação do apt-get
 RUN apt-get update && apt-get install -y git mosquitto && rm -rf /var/lib/apt/lists/*
 
-# Instalar bibliotecas Python
-RUN /opt/zato/current/bin/pip install schedule requests pyyaml paho-mqtt
+# === INSTALAÇÃO DE DEPENDÊNCIAS PYTHON ===
+# 1. Copia o arquivo requirements.txt para uma pasta temporária no container
+COPY requirements.txt /tmp/requirements.txt
 
-# Instalação do pacote Tatu Wrapper
+# 2. Instala os pacotes listados no arquivo usando o pip do Zato
+RUN /opt/zato/current/bin/pip install -r /tmp/requirements.txt \
+    && rm /tmp/requirements.txt
+
+# Instalação do pacote Tatu Wrapper (mantido via git clone)
 RUN git clone https://github.com/larsid/extended-tatu-wrapper.git /tmp/meu-pacote \
     && /opt/zato/current/bin/pip install /tmp/meu-pacote/python-version \
     && rm -rf /tmp/meu-pacote
