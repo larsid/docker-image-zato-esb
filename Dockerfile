@@ -10,7 +10,7 @@ EXPOSE 22 8183 11223 17010 1883 9001
 
 #RODAR COMANDOS DENTRO DO CONTAINER
 # Adicionei 'mosquitto' na lista de instalação do apt-get
-RUN apt-get update && apt-get install -y git mosquitto && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y git mosquitto net-tools iproute2 iputils-ping ethtool && rm -rf /var/lib/apt/lists/*
 
 # === INSTALAÇÃO DE DEPENDÊNCIAS PYTHON ===
 # 1. Copia o arquivo requirements.txt para uma pasta temporária no container
