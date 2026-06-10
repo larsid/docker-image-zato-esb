@@ -1,0 +1,42 @@
+security:
+groups:
+
+channel_rest:
+
+outgoing_rest:
+
+scheduler:
+  # - name: soft_iot_loca_storage_aggregation_service
+  #   is_active: True
+  #   service: soft-iot.aggregation.service
+  #   job_type: interval_based
+  #   start_date: "2025-11-29 19:19:19" # <--- Aspas aqui
+  #   minutes: 30
+  # - name: soft_iot_loca_storage_cleanup_service
+  #   is_active: True
+  #   service: soft-iot.cleanup.service
+  #   job_type: interval_based
+  #   start_date: "2025-11-29 19:20:20" # <--- Aspas aqui
+  #   hours: 2
+  # - name: start - local storage
+  #   is_active: True
+  #   service: soft-iot.storage.service
+  #   job_type: one_time
+  #   start_date: "2025-11-29 19:21:19" # <--- Aspas aqui
+
+ldap:
+sql:
+outgoing_soap:
+microsoft_365:
+cache:
+confluence:
+jira:
+email_imap:
+email_smtp:
+odoo:
+elastic_search:
+pubsub_topic:
+pubsub_permission:
+pubsub_subscription:
+external_scheduler:
+
