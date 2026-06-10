@@ -431,33 +431,33 @@ log_verbose "Creating directory structure"
 mkdir -p ${Zato_Env_Path}
 chown zato:zato ${Zato_Env_Path}
 
-# Remove existing Zato environment if it exists
-log_verbose "Removing existing Zato environment"
-rm -rf /opt/zato/env/qs-1
+# MODIFIED
+if [ ! -d "${Zato_Env_Path}/server1" ]; then
+    log_timestamp "Criando ambiente Zato do zero (Primeira execução)..."
 
-# Create Zato quickstart environment - suppress all output
-log_verbose "Creating a Zato environment"
+    QUICKSTART_EXTRA_ARGS=""
+    if [ ! -z "$Zato_Admin_Invoke_Password" ]; then
+        QUICKSTART_EXTRA_ARGS="--server-api-client-for-scheduler-password '$Zato_Admin_Invoke_Password'"
+    fi
 
-QUICKSTART_EXTRA_ARGS=""
-if [ ! -z "$Zato_Admin_Invoke_Password" ]; then
-    QUICKSTART_EXTRA_ARGS="--server-api-client-for-scheduler-password '$Zato_Admin_Invoke_Password'"
-fi
-
-quickstart_output=$(su - zato -c "export PATH=\$PATH:~/current/bin && \
-    export PYTHONWARNINGS=ignore && \
-    export Zato_Start_Pubsub=${Zato_Start_Pubsub} && \
-    export Zato_Start_Load_Balancer=${Zato_Start_Load_Balancer} && \
-    export Zato_Metrics_Password='${Zato_Metrics_Password}' && \
-    Zato_Server_To_Scheduler_Use_TLS=False zato quickstart \
-    ${Zato_Env_Path} \
-    --odb-type sqlite \
-    --cluster-name '${Zato_Cluster_Name}' \
-    ${QUICKSTART_EXTRA_ARGS} \
-    --verbose" 2>&1)
-if [ $? -ne 0 ]; then
-    log_timestamp "Failed to create a quickstart environment"
-    echo "$quickstart_output"
-    exit 1
+    quickstart_output=$(su - zato -c "export PATH=\$PATH:~/current/bin && \
+        export PYTHONWARNINGS=ignore && \
+        export Zato_Start_Pubsub=${Zato_Start_Pubsub} && \
+        export Zato_Start_Load_Balancer=${Zato_Start_Load_Balancer} && \
+        export Zato_Metrics_Password='${Zato_Metrics_Password}' && \
+        Zato_Server_To_Scheduler_Use_TLS=False zato quickstart \
+        ${Zato_Env_Path} \
+        --odb-type sqlite \
+        --cluster-name '${Zato_Cluster_Name}' \
+        ${QUICKSTART_EXTRA_ARGS} \
+        --verbose" 2>&1)
+    if [ $? -ne 0 ]; then
+        log_timestamp "Failed to create a quickstart environment"
+        echo "$quickstart_output"
+        exit 1
+    fi
+else
+    log_timestamp "Ambiente Zato já existe. Pulando a construção para iniciar mais rápido!"
 fi
 
 
