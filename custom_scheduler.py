@@ -61,6 +61,9 @@ def load_and_schedule():
 
     # Lê apenas a nossa chave customizada
     jobs = config.get('external_scheduler', [])
+    if(not jobs):
+        logger.info("Nenhum job externo configurado.")
+        return
     logger.info(f"Carregados {len(jobs)} jobs externos.")
 
     for job in jobs:
