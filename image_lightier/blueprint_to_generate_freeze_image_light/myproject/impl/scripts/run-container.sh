@@ -67,7 +67,7 @@ export target=/opt/hot-deploy
 
 # IMPORTANT -> THIS INDICATES THE ADDRESS OF THE DOCKER IMAGE TO USE FOR THE CONTAINER.
 # name of the docker image to use for the container
-export package_address=rhianpablo11/zato-base-congelada:v1
+export package_address=rhianpablo11/esb-zato-soft-iot-light:v3
 # export package_address=rhianpablo11/esb-zato-soft-iot:blindada 
 # export package_address=rhianpablo11/zato-ubuntu-limpo:v2
 
@@ -126,10 +126,11 @@ export container_data_dir=/home/ubuntu/mapping_archives/devices_config/
 # ========================================================================
 # ============================== (OTIMIZAÇÃO) ============================
 # ========================================================================
-export Zato_Workers=1
-export Zato_Start_Web_Admin=False
-export Zato_Start_Load_Balancer=False
-export Zato_Start_File_Listener=False
+export Zato_Workers=1                    # se nao passar nada ele deixa para o proprio Zato verificar a quantidade de Workers q irá subir
+export Zato_Start_Web_Admin=False        # aciona o dashboard web
+export Zato_Start_Load_Balancer=False    # aciona o load balancer dele -> ALTERA AS PORTAS: sem ele (17010) e com ele (11223)
+export Zato_Start_File_Listener=False    #
+export Zato_Start_Queue_Bridge=False #apresentou desempenho insatisfatorio com isso em false
 
 
 # ========================================================================
@@ -148,7 +149,7 @@ docker run -d \
     -p $HOST_SSH_PORT:22 \
     -p $HOST_ADMIN_PORT:8183 \
     -p $HOST_ADMIN_PORT_SSL:8184 \
-    -p $HOST_ZATO_PORT:11223 \
+    -p $HOST_ZATO_PORT:17010 \
     -p 11225:11225 \
     -p 3000:3000 \
     -p 15672:15672 \
@@ -170,6 +171,11 @@ docker run -d \
     -e Zato_AGGREGATION_WINDOW_MINUTES=$AGGREGATION_WINDOW_MINUTES \
     -e Zato_SAVE_DATA_ENABLED=$SAVE_DATA_ENABLED                   \
     -e Zato_DATA_RETENTION_SECONDS=$DATA_RETENTION_SECONDS         \
+    -e Zato_Workers=$Zato_Workers \
+    -e Zato_Start_Web_Admin=$Zato_Start_Web_Admin \
+    -e Zato_Start_Load_Balancer=$Zato_Start_Load_Balancer \
+    -e Zato_Start_File_Listener=$Zato_Start_File_Listener \
+    -e Zato_Start_Queue_Bridge=$Zato_Start_Queue_Bridge \
     $package_address
 
 
